@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>🗓️Agenda View🗓️</title>
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link href="https://fonts.googleapis.com/css?family=Arimo:400,400i,700,700i|IBM+Plex+Sans:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i|Lato:100,100i,300,300i,400,400i,700,700i,900,900i|Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Ramabhadra" rel="stylesheet">
+  <link rel="stylesheet" href="https://anandchowdhary.github.io/ionicons-3-cdn/icons.css" integrity="sha384-+iqgM+tGle5wS+uPwXzIjZS5v6VkqCUV7YQ/e/clzRHAxYbzpUJ+nldylmtBWCP0" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://unpkg.com/htmx.org@1.7.0"></script>
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="mobile-wrapper">
+
+   <!--======= Header =======-->
+
+   <header class="header">
+      <div class="container">
+         <span>{{ name }}'s Agenda</span>
+         <h1>{{ quote }}</h1>
+      </div>
+   </header>
+
+   <!--======= Today =======-->
+
+   <section 
+   id="today_target" 
+   class="smooth today-box" 
+   hx-target="#today_target" 
+   hx-get="/today" 
+   hx-trigger="load" 
+   id="today-box">
+   </section>
+
+   <!--======= Upcoming Events =======-->
+
+   <section class="upcoming-events"
+   id="events_target"
+   hx-target="#events_target"
+   hx-get="/events"
+   hx-trigger="load"
+   hx-swap="innerHTML settle:1s">
+         <div class="fade-in container">
+         <h3>
+            Loading Events...
+         </h3>
+         <div class="events-wrapper">
+         <div class="event"">
+            <img src="{{ url_for('static', filename='large-spinner.gif') }}" alt="Large Spinner">
+         </div>
+         </div>
+      </div>
+   </section>
+</div>
+</body>
+</html>

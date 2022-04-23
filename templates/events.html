@@ -1,0 +1,15 @@
+      <div class="container">
+         <h3>
+            Upcoming Events
+         </h3>
+         <div class="fade-in events-wrapper" hx-swap="outerHTML settle:1s">
+         {% for event in events %}
+         <div class="event" onclick="location.href='{{ event.htmlLink }}';">
+            <i class="ion">{{ event.icon }}</i>
+            <h4 class="event__point">{{ event.summary }}</h4>
+            <span class="event__duration">{{ event.date.start_time }} - {{  event.date.end_time }}</span>
+            <p class="event__description">{{ event.date.start_month }}/{{ event.date.start_day }}</p>
+         </div>
+         {% endfor %}
+         </div>
+      </div>
