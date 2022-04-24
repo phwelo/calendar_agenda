@@ -119,9 +119,19 @@ def convert_twelve_time(time):
     time['end_time'] = end.strftime("%I:%M%p")
     return time
 
-def weather_grab():
-  result = requests.get(f'http://wttr.in/{WTTR_CITY}?format=j2')
-  return json.loads(result.text)
+def wttr_weather_grab():
+  try:
+    result = requests.get(f'http://wttr.in/{WTTR_CITY}?format=j2')
+    return json.loads(result.text)
+  except:
+    return False
+  
+def wdb_weather_grab():
+  try:
+    result = requests.get(f"https://weatherdbi.herokuapp.com/data/weather/ferndalemi")
+    return json.loads(result.text)
+  except:
+    return False
 
 def pretty_date_today():
   now = datetime.datetime.now()
@@ -144,24 +154,33 @@ app = Flask(__name__)
 def root_path():
   htmx = HTMX(app)
   quote = generate_quote()
-  weather = weather_grab()
-  if htmx:
-    return '<h1>fart</h1>'
-  else:
-    return render_template(
-      'index.html', 
-      name='Elissa',
-      quote=quote
-    )
+  return render_template(
+    'index.html', 
+    name='Elissa',
+    quote=quote
+  )
 
 @app.route("/today")
 def today_path():
-  weather = weather_grab()
+  weather_attempt_1 = wttr_weather_grab()
+  if weather_attempt_1:
+    temp_f = weather_attempt_1['current_condition'][0]['temp_F']
+    description = weather_attempt_1['current_condition'][0]['weatherDesc'][0]['value']
+  else:
+    print("Warn: wttr.in API failed.") 
+    weather_attempt_2 = wdb_weather_grab()
+    if weather_attempt_2:
+      temp_f = weather_attempt_2['currentConditions']['temp']['f']
+      description = weather_attempt_2['currentConditions']['comment']
+    else:
+      print("Warn: weatherdbi.heroku.etc API failed.")
+      temp_f = 'N/A'
+      description = 'N/A'
   return render_template(
     'today.html',
     date=pretty_date_today(),
-    temp_f=weather['current_condition'][0]['temp_F'],
-    weather=weather['current_condition'][0]['weatherDesc'][0]['value']
+    temp_f=temp_f,
+    weather=description
   )
 
 @app.route("/events")
